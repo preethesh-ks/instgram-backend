@@ -4,14 +4,15 @@ const ejs = require("ejs");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
+
 const db = require("./config/database"); //db conneection data
 const User = require("./model/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const auth = require("./middleware/auth");
-
-
+const cors = require('cors');
+app.use(cors());
+app.use(bodyParser.json());
 app.post("/register", async (req, res) => {
   try {
     //get user input
@@ -73,11 +74,12 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+    // console.log(req.body);
 
     if (!(email && password)) {
-      res.status(400).send("All input is required");
+      res.status(404).send("All input is required");
     }
-
+    else{
     const user = await User.findOne({ email });
     if (user && (await bcrypt.compare(password, user.password))) {
       const token = jwt.sign(
@@ -111,12 +113,14 @@ app.post("/login", async (req, res) => {
       await user.save();
       res.status(200).json(responseUser);
     } else {
-      res.status(400).send("Invalid credentials");
-    }
-  } catch (err) {
+      res.status(401).send("Invalid credentials");
+    }}
+  }
+   catch (err) {
     console.log(err);
   }
-});
+}
+);
 
 app.post("/welcome", auth, (req, res) => {
   res.status(200).send("Welcome 🙌 ");
