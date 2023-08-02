@@ -3,20 +3,25 @@ const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const cors = require("cors");
 const app = express();
-
+app.use(cors());
+app.use(bodyParser.json());
+const Post = require("./model/PostSchema")
 const db = require("./config/database"); //db conneection data
 const User = require("./model/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const auth = require("./middleware/auth");
-const cors = require('cors');
-app.use(cors());
-app.use(bodyParser.json());
+
+
+
+
 app.post("/register", async (req, res) => {
   try {
     //get user input
     const { full_name, email, password } = req.body;
+    console.log(req.body);
     //validate input
     if (!full_name || !email || !password) {
       return res.status(400).json({ msg: "Please enter all fields" });
@@ -74,7 +79,7 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    // console.log(req.body);
+     console.log(req.body);
 
     if (!(email && password)) {
       res.status(404).send("All input is required");
@@ -121,6 +126,35 @@ app.post("/login", async (req, res) => {
   }
 }
 );
+
+
+app.post("/posts", async (req, res) => {
+  
+
+  try {
+    // Check if the userId exists in the User collection
+    const { userId, image_link, caption } = req.body;
+    console.log(req.body);
+
+    if (!userId ||!image_link ||!caption) {
+      return res.status(400).json({ msg: "Please enter all fields" });
+    }
+    else {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Create a new post and save it to the database
+    const newPost = new Post({ userId, image_link, caption });
+    await newPost.save();
+
+    res.status(201).json(newPost);}
+  } catch (error) {
+    res.status(500).json({ error: "Error creating post" });
+  }
+});
+
 
 app.post("/welcome", auth, (req, res) => {
   res.status(200).send("Welcome 🙌 ");
