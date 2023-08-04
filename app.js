@@ -6,12 +6,7 @@ require("dotenv").config();
 const multer =require("multer");
 const path = require("path");
 const cors = require("cors");
-
-
 const app = express();
-
-
-
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json())
@@ -150,7 +145,7 @@ app.post("/login",  async (req, res) => {
 }
 );
 
-app.post('/upload',upload.single('file'),async (req, res) => {
+app.post('/upload',upload.array('file'),async (req, res) => {
 console.log(req.file)
 try{
 const res = await image.create({ image: req.file.filename });

@@ -23,7 +23,7 @@ const PostSchema = new mongoose.Schema({
     ref: "user",
     required: true,
   },
-  image: {
+  path: {
     type: Array,
     required: true,
   },
