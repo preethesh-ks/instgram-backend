@@ -22,7 +22,7 @@ const upload = multer({
 router.post("/upload", upload.single("file"), async (req, res) => {
   //logic
   
-    console.log(req.file);
+    //console.log(req.file);
  try {
      res.status(200).json(req.file.path);
  }catch(error){

@@ -187,6 +187,7 @@ app.post("/posts", async (req, res) => {
     }
 
     // Create a new post and save it to the database
+    if()
     const newPost = new Post({ userId, image_link, caption });
     await newPost.save();
 

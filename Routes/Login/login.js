@@ -8,7 +8,7 @@ router.post("/login", async (req, res) => {
   // Your logic for handling the POST request for user creation
  try {
     const { email, password } = req.body;
-     console.log(req.body);
+    // console.log(req.body);
 
     if (!(email && password)) {
       res.status(404).send("All input is required");
