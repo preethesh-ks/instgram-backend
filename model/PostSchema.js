@@ -2,18 +2,22 @@ const mongoose = require("mongoose");
 
 
 const CommentSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true,
+  },
   username: {
     type: String,
-    required: true
+    required: true,
   },
   comment: {
     type: String,
-    required: true
+    required: true,
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 
@@ -24,7 +28,7 @@ const PostSchema = new mongoose.Schema({
     required: true,
   },
   path: {
-    type: Array,
+    type: String,
     required: true,
   },
   caption: {

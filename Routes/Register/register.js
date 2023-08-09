@@ -10,7 +10,7 @@ router.post("/register", async (req, res) => {
   // Your logic for handling the POST request for product creation
   try {
     //get user input
-    const { full_name, email, password } = req.body;
+    const { full_name, email, password,profilepic,username } = req.body;
     console.log(req.body);
     //validate input
     if (!full_name || !email || !password) {
@@ -20,7 +20,7 @@ router.post("/register", async (req, res) => {
     //validate user if already exist in db
     const oldUser = await User.findOne({ email });
     if (oldUser) {
-      return res.status(409).json({ msg: "User already exists" });
+      return res.status(409).json({ msg: "User already exists Please Login" });
     }
     //encrypt user password
     encryptPassword = await bcrypt.hash(password, 10);
@@ -29,6 +29,8 @@ router.post("/register", async (req, res) => {
       full_name,
       email: email.toLowerCase(),
       password: encryptPassword,
+      profilePic:profilepic,
+      username,
     });
     //create token
     const token = jwt.sign(
@@ -48,7 +50,7 @@ router.post("/register", async (req, res) => {
     );
 
     // Save the refresh token on the user object
-    refresh_token = refresh_token;
+    user.refresh_token = refresh_token;
     const responseUser = {
       id: user._id,
       full_name: user.full_name,
@@ -56,7 +58,9 @@ router.post("/register", async (req, res) => {
       access_token: user.access_token,
       refresh_token: user.refresh_token,
       followers: user.followers,
-      following: user.following,
+      following: user.following, 
+      profilepic: user.profilePic,
+      username: user.username
     };
     await user.save();
     //return new user

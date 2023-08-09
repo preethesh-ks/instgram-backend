@@ -156,7 +156,7 @@ const res = await image.create({ image: req.file.filename });
 
 app.get("/getimage",async (req, res) => {
  try {
-   const response = await image.find();
+   const response = await posts.find();
   // console.log(response);
    res.json(response);
 
@@ -187,7 +187,7 @@ app.post("/posts", async (req, res) => {
     }
 
     // Create a new post and save it to the database
-    if()
+   
     const newPost = new Post({ userId, image_link, caption });
     await newPost.save();
 
