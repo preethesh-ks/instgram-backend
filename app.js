@@ -3,21 +3,39 @@ const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const multer =require("multer");
+const path = require("path");
 const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json())
+app.use(express.static('public'));
 const Post = require("./model/PostSchema")
 const db = require("./config/database"); //db conneection data
 const User = require("./model/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const auth = require("./middleware/auth");
+const image = require("./model/Following");
+const { log } = require("console");
+const { publicDecrypt } = require("crypto");
 
-
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/Images/' )
+  },
+  filename: (req, file, cb) => {
+      cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname)) 
+    }
+})
+const upload =multer({
+  storage: storage
+})
 
 
 app.post("/register", async (req, res) => {
+  
   try {
     //get user input
     const { full_name, email, password } = req.body;
@@ -76,7 +94,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
+app.post("/login",  async (req, res) => {
   try {
     const { email, password } = req.body;
      console.log(req.body);
@@ -127,6 +145,29 @@ app.post("/login", async (req, res) => {
 }
 );
 
+app.post('/upload',upload.array('file'),async (req, res) => {
+console.log(req.file)
+try{
+const res = await image.create({ image: req.file.filename });
+}catch(err){
+  console.log(err.message);
+}
+})
+
+app.get("/getimage",async (req, res) => {
+ try {
+   const response = await posts.find();
+  // console.log(response);
+   res.json(response);
+
+ }
+ catch(err) {
+  console.log(err),"failed to get image";
+  res.json(err);
+ }
+})
+
+
 
 app.post("/posts", async (req, res) => {
   
@@ -134,7 +175,7 @@ app.post("/posts", async (req, res) => {
   try {
     // Check if the userId exists in the User collection
     const { userId, image_link, caption } = req.body;
-    console.log(req.body);
+    console.log("s");
 
     if (!userId ||!image_link ||!caption) {
       return res.status(400).json({ msg: "Please enter all fields" });
@@ -146,6 +187,7 @@ app.post("/posts", async (req, res) => {
     }
 
     // Create a new post and save it to the database
+   
     const newPost = new Post({ userId, image_link, caption });
     await newPost.save();
 
