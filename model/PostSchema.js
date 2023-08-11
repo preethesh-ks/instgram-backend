@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const CommentSchema = new mongoose.Schema({
   userId: {
     type: String,
@@ -20,7 +19,6 @@ const CommentSchema = new mongoose.Schema({
   },
 });
 
-
 const PostSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -39,10 +37,13 @@ const PostSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  likes: {
-    type: Number,
-    default: 0,
-  },
+  likes: [
+    {
+      userId: { type: mongoose.Schema.Types.ObjectId  },
+      postId: { type: mongoose.Schema.Types.ObjectId },
+      // You can include other fields like timestamp, etc.
+    },
+  ],
   comments: {
     type: [CommentSchema],
     default: [],
