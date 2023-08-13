@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const User = require("../../model/user")
 const Post = require("../../model/PostSchema");
-
+const auth = require("../../middleware/auth")
 const fs = require("fs"); 
-router.post("/post", async(req, res) => {     
+router.post("/post",auth , async(req, res) => {     
   
  const { userId, path, caption } = req.body;
   try {
@@ -16,7 +16,7 @@ router.post("/post", async(req, res) => {
       return res.status(400).json({ msg: "Please enter all fields" });
     } else {
       const user = await User.findById(userId);
-      console.log(user);
+      //console.log(user);
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }

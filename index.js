@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-const db = require("./config/database"); //db conneection data 
+const db = require("./config/database"); //db conneection data
 const User = require("./model/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -26,25 +26,17 @@ const loginRoute = require("./Routes/Login/login");
 const registerRoute = require("./Routes/Register/register");
 const UploadRoute = require("./Routes/Post/postImageUpload");
 const PostRoute = require("./Routes/Post/post");
-const HomeRoute = require("./Routes/Home/HomeData")
+const HomeRoute = require("./Routes/Home/HomeData");
 const Post = require("./model/PostSchema");
 const LikesRoute = require("./Routes/Likes/Likes");
-app.use('/api',loginRoute);
-app.use('/api',registerRoute);
+
+
+app.use("/api", loginRoute);
+app.use("/api", registerRoute);
 // app.use('/api',UploadRoute);
-app.use('/api',PostRoute);
-app.use('/api',HomeRoute)
-app.use("/api",LikesRoute);
-
-
-
-
-
-
-
-      
-
-
+app.use("/api", PostRoute);
+app.use("/api", HomeRoute);
+app.use("/api", LikesRoute);
 
 // app.post("/welcome", (req, res) => {
 //   const files = req.files;
@@ -52,7 +44,6 @@ app.use("/api",LikesRoute);
 //   res.status(200).send("Welcome 🙌 ");
 // });
 app.post("/welcome", auth, (req, res) => {
-  
   res.status(200).send("Welcome 🙌 ");
 });
 

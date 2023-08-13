@@ -3,10 +3,10 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const Post = require("../../model/PostSchema")
 
-router.post("/:postId", async (req, res) => {
+router.post("/like", async (req, res) => {
 
 try {
-  const postId = req.params.postId;
+  const postId = req.body.postId;
   console.log(postId);
   const userId = req.body.userId;
   console.log(userId);
