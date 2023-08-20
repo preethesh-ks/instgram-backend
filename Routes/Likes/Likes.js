@@ -7,9 +7,9 @@ router.post("/like", async (req, res) => {
 
 try {
   const postId = req.body.postId;
-  console.log(postId);
+  // console.log(postId);
   const userId = req.body.userId;
-  console.log(userId);
+  // console.log(userId);
 
   const post = await Post.findById(postId);
   //console.log(post);
@@ -26,11 +26,12 @@ try {
     if (userlike !== -1) {
       post.likes.splice(userlike, 1);
       await post.save();
-      res.json(200,"Unliked Succes");
+      // res.json(200,"Unliked Succes");
+      res.status(200).json("Unliked sucess")
     } else {
       post.likes.push({ userId, postId });
       await post.save();
-      res.json(200,"Liked Succes");
+      res.status(200).json("liked sucess");
     }
   }
 } catch (err) {

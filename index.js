@@ -27,9 +27,9 @@ const registerRoute = require("./Routes/Register/register");
 const UploadRoute = require("./Routes/Post/postImageUpload");
 const PostRoute = require("./Routes/Post/post");
 const HomeRoute = require("./Routes/Home/HomeData");
+const CommentRoute = require("./Routes/Comments/comment");
 const Post = require("./model/PostSchema");
 const LikesRoute = require("./Routes/Likes/Likes");
-
 
 app.use("/api", loginRoute);
 app.use("/api", registerRoute);
@@ -37,7 +37,7 @@ app.use("/api", registerRoute);
 app.use("/api", PostRoute);
 app.use("/api", HomeRoute);
 app.use("/api", LikesRoute);
-
+app.use("/api", CommentRoute);
 // app.post("/welcome", (req, res) => {
 //   const files = req.files;
 //     console.log(req);
