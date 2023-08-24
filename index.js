@@ -20,7 +20,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const auth = require("./middleware/auth");
 
-const { log } = require("console");
+// const { log } = require("console");
 const { publicDecrypt } = require("crypto");
 const loginRoute = require("./Routes/Login/login");
 const registerRoute = require("./Routes/Register/register");
@@ -30,6 +30,7 @@ const HomeRoute = require("./Routes/Home/HomeData");
 const CommentRoute = require("./Routes/Comments/comment");
 const Post = require("./model/PostSchema");
 const LikesRoute = require("./Routes/Likes/Likes");
+const { access } = require("fs");
 
 app.use("/api", loginRoute);
 app.use("/api", registerRoute);
@@ -50,6 +51,48 @@ app.post("/welcome", auth, (req, res) => {
 app.get("/", (req, res) => {
   res.send("hello");
 });
+
+app.post("api/auth",auth,(req,res)=>{
+  res.status(200).send("jj")
+})
+
+app.post("/refresh", async (req, res) => {
+  const refreshToken = req.body.rtoken;
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_KEY);
+
+    // Generate a new access token
+    const accessToken = jwt.sign(
+      { user_id: decoded.user_id, email: decoded.email },
+      process.env.TOKEN_KEY,
+      { expiresIn: "2h" }
+    );
+
+    // Generate a new refresh token
+    const newRefreshToken = jwt.sign(
+      { user_id: decoded.user_id, email: decoded.email },
+      process.env.REFRESH_TOKEN_KEY,
+      { expiresIn: "7d" }
+    );
+
+    res
+      .status(200)
+      .json({ token: accessToken, refresh_token: newRefreshToken });
+  } catch (err) {
+   
+
+    if (err instanceof jwt.TokenExpiredError) {
+      res.status(401).json({ message: "Refresh token has expired" });
+    } else if (err instanceof jwt.JsonWebTokenError) {
+      res.status(401).json({ message: "Invalid refresh token" });
+    } else {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+});
+  
+
 
 app.listen(process.env.API_PORT, function () {
   console.log(`server started on port ${process.env.API_PORT}`);
